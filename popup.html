@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <script src="popup.js"></script>
+    <style>
+      #notConfiguredWarning,
+      #currentConfiguration {
+        display: none;
+      }
+    </style>
+  </head>
+  <body style="min-width: 300px">
+    <h1 style="font-size: medium">Current configuration</h1>
+    <p id="notConfiguredWarning" style="color: red">
+      Unsplash Likes is currently not configured.
+    </p>
+    <p id="currentConfiguration">
+      When opening a new tab you will see
+      <span style="font-weight: bold">@<span id="usernameValue"></span>'s</span>
+      <span id="selectedContentValue"></span> on Unsplash.
+    </p>
+    <p>
+      To change options, right-click the extension's icon and choose "Options".
+    </p>
+  </body>
+</html>

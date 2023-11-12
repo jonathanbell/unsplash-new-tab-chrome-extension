@@ -1,0 +1,24 @@
+{
+	"manifest_version": 3,
+	"name": "Unsplash Likes",
+	"version": "0.1.1",
+	"incognito": "split",
+	"description": "Show your liked photos from Unsplash when you open a new tab.",
+	"permissions": [
+		"tabs",
+		"activeTab",
+		"scripting",
+		"storage"
+	],
+	"action": {
+		"default_popup": "popup.html",
+		"default_title": "Unsplash Likes Configuration"
+	},
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": false
+	},
+	"chrome_url_overrides": {
+		"newtab": "newTab.html"
+	}
+}
