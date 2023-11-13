@@ -3,27 +3,41 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Unsplash Likes Options</title>
+    <title>Unsplash New Tab Options</title>
   </head>
   <body>
-    <label for="username">My Unsplash username is: </label>
-    <input type="text" id="username" />
+    <label for="useRandomPhotos"
+      >Use random photos (un-check to enable a custom user):
+    </label>
+    <input type="checkbox" id="useRandomPhotos" />
 
-    <br />
-    <br />
-
-    <label for="selectedContent">When I open a new tab show: </label>
-    <select id="selectedContent">
-      <option value="myLikes">my likes</option>
-      <option value="myPhotos">my photos</option>
-    </select>
-
-    <br />
-    <br />
+    <p style="margin-bottom: 1.5rem">
+      Show
+      <input
+        title="A valid Unsplash username"
+        size="17"
+        type="text"
+        id="username"
+        placeholder="Unsplash username"
+      />'s
+      <select id="selectedContent">
+        <option value="myLikes">likes</option>
+        <option value="myPhotos">photos</option>
+      </select>
+      on a new tab.
+    </p>
 
     <button id="save">Save</button>
     <span id="status" style="color: green; float: right"></span>
 
-    <script src="options.js"></script>
+    <hr style="display: block; margin-top: 1rem" />
+
+    <p>
+      <strong>Note:</strong> after saving these options, opening new tabs a few
+      times will refresh and re-cache new photos. The new photos may not appear
+      until the cache has been rebuilt.
+    </p>
+
+    <script type="module" src="options.js"></script>
   </body>
 </html>

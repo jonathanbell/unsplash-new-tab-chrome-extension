@@ -1,38 +1,65 @@
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  display: inline-block;
+}
+
 body {
   padding: 0;
   margin: 0;
+  font-size: initial;
 }
 
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: darkslategrey;
-    color: #fff;
+    background-color: #293535;
+    color: #f4f4f4;
+  }
+
+  a,
+  a:visited {
+    color: cornsilk;
   }
 }
 
 @media (prefers-color-scheme: light) {
   body {
-    background-color: rgb(29, 45, 85);
-    color: #222;
+    background-color: #cee4ff0a;
+    color: #040404;
+  }
+
+  a,
+  a:visited {
+    color: black;
   }
 }
 
-#default-copy {
+#default-copy,
+#background-image {
   text-align: center;
-  font-size: x-large;
-  display: none;
+  font-size: large;
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
 }
 
 #background-image {
-  opacity: 0;
-  transition: opacity 2s ease-in-out;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100%; /* Is this needed? */
   z-index: -1;
   pointer-events: none;
-  transition: opacity 200ms ease-in-out;
   object-fit: cover;
 }

@@ -1,158 +1,39 @@
-const DB_NAME = 'unsplash-new-tab';
-const DB_TABLE = 'images';
-const DEFAULT_IMAGE = 'default.png';
-const MAX_CACHED_IMAGES = 5;
-// 2560x1920 is the minimum resolution allowed on Unsplash.
-// 4096x2160 == 4k resolution
-const IMAGE_RESOLUTION = `${screen.width}x${screen.height}`;
+import { pruneDatabase, placeImageOnNewTab, addImageToStore } from "./app.js";
+import {
+  NUMBER_OF_PHOTOS_TO_FETCH,
+  IMAGE_RESOLUTION,
+  DEFAULT_UNSPASH_URL,
+} from "./constants.js";
 
-const imageDb = () => {
-	const dbRequest = indexedDB.open(DB_NAME, 1);
+document.addEventListener("DOMContentLoaded", () => {
+  let unsplashUrl = DEFAULT_UNSPASH_URL;
 
-	dbRequest.onupgradeneeded = (e) => {
-		const db = e.target.result;
-		if (!db.objectStoreNames.contains(DB_TABLE)) {
-			db.createObjectStore(DB_TABLE, { autoIncrement: true });
-		}
-	};
+  chrome.storage.sync.get(
+    { useRandomPhotos: true, selectedContent: "myLikes", username: "" },
+    (items) => {
+      const isExtensionConfigured =
+        !items.useRandomPhotos && items.username !== "" ? true : false;
 
-	dbRequest.onerror = function (error) {
-		console.error('IndexedDB error: ', error);
-		console.dir(error);
-	};
+      if (isExtensionConfigured) {
+        unsplashUrl = `https://source.unsplash.com/user/${items.username}${
+          items.selectedContent === "myLikes" ? "/likes" : ""
+        }/${IMAGE_RESOLUTION}`;
+      }
 
-	return dbRequest;
-};
+      // Place a new image on the new tab page. If there is a cached image, use it.
+      placeImageOnNewTab();
 
-const setBackgroundImage = (uri = null) => {
-	if (uri === null) {
-		uri = DEFAULT_IMAGE;
-		// Show the default copy.
-		document.getElementById('default-copy').style.display = 'block';
-	}
+      // Use the proper Unsplash URL to download images and add them to our
+      // store.
+      for (let i = 0; i < NUMBER_OF_PHOTOS_TO_FETCH; i++) {
+        addImageToStore(unsplashUrl);
+      }
 
-	const ogImg = document.getElementById('background-image');
-	if (ogImg !== null) {
-		ogImg.style.opacity = '0';
-		ogImg.remove();
-	}
-	const img = document.createElement('img');
-	img.id = 'background-image';
-	img.src = uri;
-	img.onload = function () {
-		this.style.opacity = '1';
-	};
-	document.body.appendChild(img);
-}
-
-const blobToBase64 = (blob) => {
-	return new Promise((resolve, _) => {
-		const reader = new FileReader();
-		reader.onloadend = () => resolve(reader.result);
-		reader.readAsDataURL(blob);
-	});
-}
-
-const getImageFromUnsplash = async (url) => {
-	try {
-		const response = await fetch(url);
-		const blob = await response.blob();
-		const imgBase64 = await blobToBase64(blob);
-		return imgBase64;
-	} catch (error) {
-		console.error('getImageFromUnsplash() error: ', error);
-		// TODO: do we want to return a default image? Throw fatal error?
-	}
-};
-
-const addImageToStore = async (url) => {
-	const imgBase64 = await getImageFromUnsplash(url);
-
-	const imageStore = imageDb();
-
-	imageStore.onsuccess = (e) => {
-		const db = e.target.result;
-		const tx = db.transaction(DB_TABLE, 'readwrite');
-		tx.objectStore(DB_TABLE).put({
-			createdAt: new Date().getTime(),
-			imageData: imgBase64
-		});
-	};
-}
-
-const pruneDatabase = (maxItems = MAX_CACHED_IMAGES) => {
-	const imageStore = imageDb();
-
-	imageStore.onsuccess = (e) => {
-		try {
-			const db = e.target.result;
-			const tx = db.transaction(DB_TABLE, 'readwrite');
-			const images = tx.objectStore(DB_TABLE);
-			images.getAll().onsuccess = (e) => {
-				const allImages = e.target.result;
-				if (allImages.length > maxItems) {
-					const imagesToDelete = allImages.slice(0, allImages.length - maxItems).map(image => image.createdAt);
-					images.openCursor().onsuccess = function (event) {
-						const cursor = event.target.result;
-						if (cursor) {
-							if (imagesToDelete.includes(cursor.value.createdAt)) {
-								cursor.delete();
-							}
-							cursor.continue();
-						}
-					};
-				}
-			};
-		} catch (error) {
-			console.error(error);
-			throw new Error('Unable to open IndexedDB');
-		}
-	};
-};
-
-const placeCachedImageOnBackground = () => {
-	const imageStore = imageDb();
-
-	imageStore.onsuccess = (e) => {
-		try {
-			const db = e.target.result;
-			const tx = db.transaction(DB_TABLE, 'readwrite');
-			const images = tx.objectStore(DB_TABLE);
-			images.getAll().onsuccess = (e) => {
-				if (e.target.result.length === 0) {
-					console.warn('0 images available in unsplash new tab imageStore');
-					setBackgroundImage(null);
-				} else {
-					const i = Math.floor(Math.random() * e.target.result.length);
-					setBackgroundImage(e.target.result[i].imageData);
-				}
-			};
-		} catch (error) {
-			console.error(error);
-			throw new Error('Unable to open IndexedDB');
-		}
-	};
-}
-
-placeCachedImageOnBackground();
-pruneDatabase();
-
-document.addEventListener('DOMContentLoaded', () => {
-	chrome.storage.sync.get(
-		{ selectedContent: 'myLikes', username: '' },
-		(items) => {
-			if (items.username !== '') {
-				const url = `https://source.unsplash.com/user/${items.username}/likes/${IMAGE_RESOLUTION}`;
-				for (let i = 0; i < MAX_CACHED_IMAGES; i++) {
-					addImageToStore(url);
-				}
-			} else {
-				pruneDatabase(0);
-				// Extension is still not configured.
-				document.getElementById('default-copy').style.display = 'block';
-				// TODO: show default image??????? or just show nothing?
-				// Prompt for the user to configure the extension.
-			}
-		}
-	);
+      // Tidy up the database by removing the old images. We keep the default
+      // number of items. Remeber that this extension shows random images so
+      // there is a chance that the same image will be re-shown and/or
+      // re-downloaded from Unsplash.
+      pruneDatabase();
+    }
+  );
 });

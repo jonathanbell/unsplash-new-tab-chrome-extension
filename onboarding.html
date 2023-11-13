@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="newTab.css" />
+
+    <style>
+      #example-image img {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+      }
+    </style>
+
+    <title>Unsplash New Tab</title>
+  </head>
+  <body style="padding: 2rem 4rem; margin: auto; max-width: 900px">
+    <h1>
+      <img
+        alt="extension icon"
+        style="vertical-align: bottom"
+        src="images/icon-32.png"
+      />
+      Unsplash New Tab
+    </h1>
+    <p>
+      By default, the extension will show random images from
+      <a target="_blank" rel="noopener" href="https://unsplash.com">Unsplash</a>
+      when you open a new tab.
+    </p>
+    <p>
+      In order to show your own Unsplash photos or your liked photos from
+      Unsplash (instead of random images), open the extension's options by
+      clicking the 3 dots next to the extension's name in the Chrome extensions
+      menu. Alternatively, you can pin the extension to the Chrome toolbar and
+      right-click on the extension's icon and choose "Options". Enter your
+      Unsplash username (or the Unsplash username of someone you admire 😻) and
+      choose the content you want to see.
+    </p>
+    <p>
+      The first time you open a new tab after installing the extension or
+      changing the extension options, it will take a few moments for a new photo
+      to load. However, subsequent new tabs will load much faster.
+    </p>
+    <div style="margin-top: 1.5rem" id="example-image">
+      <p style="display: none">
+        Fetching a fresh image from Unsplash... <span class="spin">↻</span>
+      </p>
+    </div>
+    <script src="onboarding.js"></script>
+  </body>
+</html>

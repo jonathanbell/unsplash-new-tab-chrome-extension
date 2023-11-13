@@ -1,0 +1,4 @@
+{
+	"maxLineLength": 80,
+	"trailingComma": "es5"
+}

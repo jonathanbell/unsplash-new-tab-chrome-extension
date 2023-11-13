@@ -1,9 +1,13 @@
-# Unsplash Likes New Tab
+# Unsplash New Tab
 
-You cannot inject a script into a new tab via the Chrome API: <https://groups.google.com/a/chromium.org/g/chromium-extensions/c/6TtlYbWWN4Q>
+A Chrome extension that shows Unsplash photos on each new tab. Can be configured to show your own Unsplash photos, your likes, or random photos from across Unsplash.
 
-// <https://developer.chrome.com/docs/extensions/reference/>
+## Development notes
 
-// <https://instant.unsplash.com/>
+To get started developing:
 
-// <https://www.reddit.com/r/unsplash/comments/s13x4h/what_happened_to_sourceunsplashcom/>
+1. If you don't already have it, install ESLint globally. _`npm` wasn't used for development because it felt too heavy-handed. This extension is meant to be lightweight._
+1. Clone this repository
+1. [Load the extension "unpacked" into Chrome.](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked)
+
+If you'd like to check your JS for issues/bugs, run ESLint via: `eslint --ext .js .`
