@@ -1,5 +1,6 @@
 # OS
 .DS_Store
 
-# NPM
-node_modules/
+# Chrome Webstore
+# @see: https://developer.chrome.com/docs/webstore/prepare/
+*.zip
