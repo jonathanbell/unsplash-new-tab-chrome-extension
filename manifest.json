@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Unsplash New Tab",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"incognito": "split",
 	"description": "Show your photos, your liked photos, or someone else's photos/likes from Unsplash inside Chrome when you open a new tab.",
 	"icons": {
@@ -11,7 +11,6 @@
 		"128": "images/icon-128.png"
 	},
 	"permissions": [
-		"tabs",
 		"storage"
 	],
 	"background": {
