@@ -1,4 +1,4 @@
-# Unsplash New Tab
+# Unsplash New Tab Chrome Extention
 
 A Chrome extension that shows Unsplash photos on each new tab. Can be configured to show your own Unsplash photos, your friend's photos, your likes, your friend's likes, or random photos from across Unsplash.
 
